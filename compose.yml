@@ -1,22 +1,25 @@
 services:
   jenkins:
     # image: abrajamaf/jenkins:lts-alpine
-    # image: jenkins/jenkins:lts
+    # image: jenkins/jenkins:lts-jdk11
     build: 
       context: .
     #ports:
     #  - "8980:8080"
     #  - "50000:50000"
+    environment:
+      - JENKINS_OPTS="--prefix=/jenkins"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./data:/var/jenkins_home
     networks:
       - traefik_proxy
       - net-jenkins
 
     labels:
       - "traefik.enable=true"
-      #- "traefik.http.routers.jenkins.rule=Host(`apidev.buroidentidad.com`) && Path(`/`)"
-      - "traefik.http.routers.jenkins.rule=Host(`apidev.buroidentidad.com`)" #&& Path(`/jkn/`)"
+      - "traefik.http.routers.jenkins.rule=Path(`/jenkins/`)"
+      #- "traefik.http.routers.jenkins.rule=Host(`apidev.buroidentidad.com`)" #&& Path(`/jkn/`)"
       # - "traefik.http.routers.db-router.tls=true"
       - "traefik.http.routers.jenkins.entrypoints=web"
       - "traefik.http.routers.jenkins.service=jenkins@docker"

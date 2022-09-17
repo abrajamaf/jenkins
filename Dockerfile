@@ -1,11 +1,10 @@
 # syntax=docker/dockerfile:1
-# FROM jenkinsci/blueocean
 #FROM jenkins/jenkins:lts-alpine
-FROM jenkins/jenkins:lts
+FROM jenkins/jenkins:lts-jdk11
 
 USER root
 
-RUN apt-get update && apt-get install -y wget tzdata curl ca-certificates gnupg lsb-release
+RUN apt-get update && apt-get install -y wget net-tools tzdata curl ca-certificates gnupg lsb-release
 
 RUN mkdir -p /etc/apt/keyrings && curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
@@ -25,6 +24,8 @@ RUN ln -s  /opt/apache-maven-3.8.6 /opt/mvn
 RUN ln -s /opt/mvn/bin/mvn /usr/local/bin
 
 RUN rm /tmp/apache-maven-3.8.6-bin.tar.gz
+
+RUN ln -sf /usr/share/zoneinfo/America/Mexico_City /etc/localtime
 
 RUN chown jenkins:jenkins /opt/mvn;
 
